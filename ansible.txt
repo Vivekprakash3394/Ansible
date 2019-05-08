@@ -1,0 +1,97 @@
+#####################################################
+## You need epel to install ansible in your system ##
+#####################################################
+-------------------------------------------------
+step 1 : Install epel-release
+=======> yum install epel-release -y
+------------------------------------------------
+
+step 2 : Now you are ready to install ansible 
+=======> yum install ansible -y
+------------------------------------------------
+
+##############################################################################################
+## Now you have successfully installed ansible in your master node/base machine/main system ##
+## Now Generate the ssh key and share to remote machine for ssh-keyless login               ##
+##############################################################################################
+---------------------------------------------------------------------------------------------
+step 3 : Generate the ssh key
+=======> ssh-keygen
+------------------------------------------------
+step 4 : Now share the generated ssh key with remote machine
+=======> ssh-copy-id ip_of remote_machine 192.168.122.154
+==>[If you don't know the ip of remote machine then just open your remote machine and run ip a command to get remote ip then just pasted here]<== 
+=======> ssh-copy-id 192.168.122.154
+
+
+#####################################################################################################
+## To perform any task on remote machine, we need to add ip of remote machine at ansible inventory ##
+#####################################################################################################
+-----------------------------------------------------------------------------------------------------
+step 5 : Add remote machine ip in ansible host inventory by using vim or by any editor
+=======> vim /etc/ansible/hosts
+-----------------------------------------------------------------------------------------------------
+
+==> Now write
+[testing]         // where testing = group name    
+192.168.122.154   // where 162.168.122.154 = remote machine ip
+
+------------------------------------------------------------------------------------------------------
+
+###################################################################
+## Now just check the connection of remote machine by using ping ##
+###################################################################
+-------------------------------------------------------------------
+
+step 6 : just ping the remote machine
+=======> ansible -m ping 'testing'  // where m = module and testing = my group name 
+
+>>>>Your answer must be look like this
+192.168.122.154 | SUCCESS => {
+    "changed": false, 
+    "ping": "pong"
+
+>>>> If YES Congratulations!!! You have successfully pinged your remote machine and reply is coming from your remote machine
+
+
+#################################################################
+## Now you can do what you want to do with your remote machine ##
+## For example i want to check date of remote machine          ##
+#################################################################
+-----------------------------------------------------------------
+>>>>just write<<<<<
+ansible -m shell -a "date" testing
+
+>>>>And if you want see want is going on behind this command just add -vvv at the of the command
+ansible -m shell -a "date" testing -vvv
+
+
+
+#########################################################################################
+## Lets write a small playbook to install apache at remote machine from master machine ##
+#########################################################################################
+-----------------------------------------------------------------------------------------
+step 7 : go to the playbook directory
+=======> cd /etc/ansible/playbooks/
+
+step 8 : create your yaml file here for example vim testing.yml and start writing playbook code/scripte
+
+---
+- hosts : testing
+  vars :
+  tasks : 
+  - name : Install apache httpd
+    yum :
+      name : httpd
+      state : latest
+
+Now just save it ......
+------------------------------------------------------------------------------------------
+
+step 9 : run your playbook
+=======> ansible-playbook testing.yml
+>>>>it will install apache at your remote machine<<<<
+
+you can check whather apache is installed or not at remote machine
+=======> ansible -m shell -a "rpm -q httpd" testing
+
