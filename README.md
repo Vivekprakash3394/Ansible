@@ -5,4 +5,4 @@
 4. Ping for remote machie connection 
 5. Write playebook to install apache httpd server at remote machine
 6. Run that playbook
-END
+7. END
